@@ -88,9 +88,9 @@ async def film_info(msg: types.Message):
     # Тут мы получаем ссылку на то, где посмотреть фильм
     try:
         film_name = msg.text
-        answer = get_href(film_name)[0]
+        answer = get_href(film_name)
         await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
-        await bot.send_message(msg.from_user.id, answer)
+        await bot.send_message(msg.from_user.id, answer[0])
         await bot.send_message(msg.from_user.id, 'Если вдруг ссылка нерабочая, то еще можете попробовать посмотреть тут')
         new_films = ''
         for href in answer[1:]:
