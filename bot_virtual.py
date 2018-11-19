@@ -55,8 +55,18 @@ def get_imdb_link(film_name):
 def get_poster(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html')
+    # Доделать good quality poster_url = 'https://www.imdb.com' + soup.find('div', class_='poster').a.get('href')
     return soup.find('div', class_='poster').find('img').get('src')
 
+def get_rating(url):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html')
+    return soup.find('div', class_='imdbRating').strong.get('title')
+
+def get_info(url):
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html')
+    return soup.find('div', class_='plot_summary').find('div', class_='summary_text').text.replace('\n', ' ').strip()
 
 
 
@@ -73,12 +83,33 @@ async def process_help_command(message: types.Message):
 
 @dp.message_handler()
 async def film_info(msg: types.Message):
-    film_name = msg.text
-    answer = get_href(film_name)
+    
+    # Тут мы получаем ссылку на то, где посмотреть фильм
+    try:
+        film_name = msg.text
+        answer = get_href(film_name)
+        await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
+        await bot.send_message(msg.from_user.id, answer)
+    except:
+        await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
-    await bot.send_message(msg.from_user.id, answer)  # msg.text)
+    try:
+        imdb_link = get_imdb_link(film_name)
+    except:
+        await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
-    imdb_link = get_imdb_link(film_name)
+    # А вот и описание
+
+    info = get_info(imdb_link)
+    await bot.send_message(msg.from_user.id, info)
+
+    # А вот и рейтинг
+
+    rating = get_rating(imdb_link)
+    await bot.send_message(msg.from_user.id, rating)
+
+    # А вот и постер
+
     poster_url = get_poster(imdb_link)
 
     await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
