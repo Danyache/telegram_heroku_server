@@ -118,6 +118,8 @@ async def film_info(msg: types.Message):
     rating = get_rating(imdb_link)
     await bot.send_message(msg.from_user.id, rating)
 
+    await bot.send_message(msg.from_user.id, 'test_test')
+
     # А вот и постер
 
     poster_url = get_poster(imdb_link)
