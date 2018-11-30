@@ -30,14 +30,19 @@ def get_href(film_name):
     soup = BeautifulSoup(r.text, 'html')
     successor_urls = soup.findAll('div', class_='g')
     links = []
-    for i in range(5):
+    k = 0
+    i = 0
+    while k<5:
         href = successor_urls[i].find('a').get('href')
-        match = re.search('&sa=U', href)
-        another_match = re.search("https?://", href)
-        n = match.start()
-        m = another_match.start()
-        links.append(successor_urls[i].find('a').get('href')[m:n])
+        if ("smotri-filmi" not in href) and ("hdrezka.ag" not in href):
+            match = re.search('&sa=U', href)
+            another_match = re.search("https?://", href)
+            n = match.start()
+            m = another_match.start()
+            links.append(successor_urls[i].find('a').get('href')[m:n])
+            k += 1
         # links.append(href)
+        i += 1
     return links
 
 def get_imdb_link(film_name):
