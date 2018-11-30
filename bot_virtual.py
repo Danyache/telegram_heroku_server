@@ -23,19 +23,21 @@ def get_href(film_name):
     for word in words:
         url = url + word + '%20'
 
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     url = url + 'смотреть%20онлайн%20в%20хорошем%20качестве'
 
-    r = requests.get(url)
+    r = requests.get(url, headers=headers)
     soup = BeautifulSoup(r.text, 'html')
     successor_urls = soup.findAll('div', class_='g')
     links = []
     for i in range(5):
         href = successor_urls[i].find('a').get('href')
-        match = re.search('&sa=U', href)
-        another_match = re.search("https?://", href)
-        n = match.start()
-        m = another_match.start()
-        links.append(successor_urls[i].find('a').get('href')[m:n])
+        # match = re.search('&sa=U', href)
+        # another_match = re.search("https?://", href)
+        # n = match.start()
+        # m = another_match.start()
+        # links.append(successor_urls[i].find('a').get('href')[m:n])
+        links.append(href)
     return links
 
 def get_imdb_link(film_name):
