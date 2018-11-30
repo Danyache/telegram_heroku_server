@@ -23,7 +23,7 @@ def get_href(film_name):
     for word in words:
         url = url + word + '%20'
 
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    headers = {'User-Agent': 'Chrome/70.0.3538.77 Safari/537.36'}
     url = url + 'смотреть%20онлайн%20в%20хорошем%20качестве'
 
     r = requests.get(url, headers=headers)
@@ -32,12 +32,12 @@ def get_href(film_name):
     links = []
     for i in range(5):
         href = successor_urls[i].find('a').get('href')
-        # match = re.search('&sa=U', href)
-        # another_match = re.search("https?://", href)
-        # n = match.start()
-        # m = another_match.start()
-        # links.append(successor_urls[i].find('a').get('href')[m:n])
-        links.append(href)
+        match = re.search('&sa=U', href)
+        another_match = re.search("https?://", href)
+        n = match.start()
+        m = another_match.start()
+        links.append(successor_urls[i].find('a').get('href')[m:n])
+        # links.append(href)
     return links
 
 def get_imdb_link(film_name):
@@ -118,7 +118,6 @@ async def film_info(msg: types.Message):
     rating = get_rating(imdb_link)
     await bot.send_message(msg.from_user.id, rating)
 
-    await bot.send_message(msg.from_user.id, 'test_test')
 
     # А вот и постер
 
