@@ -93,6 +93,9 @@ async def process_start_command(message: types.Message):
     try:
         global last_film
         film_name = last_film[message.chat.id]
+        await bot.send_message(message.from_user.id, str(film_name))
+        await bot.send_message(message.from_user.id, str(message.chat.id))
+        await bot.send_message(message.from_user.id, str(last_film))
         try:
             imdb_link = get_imdb_link(film_name)
         except:
