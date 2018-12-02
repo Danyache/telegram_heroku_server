@@ -118,9 +118,9 @@ async def process_start_command(message: types.Message):
 @dp.message_handler()
 async def film_info(msg: types.Message):
     # Тут мы получаем ссылку на то, где посмотреть фильм
+    film_name = msg.text
     last_film[msg.chat.id] = film_name
     try:
-        film_name = msg.text
         answer = get_href(film_name)
         await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
         await bot.send_message(msg.from_user.id, answer[0])
