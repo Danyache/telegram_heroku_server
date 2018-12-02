@@ -93,15 +93,16 @@ async def process_start_command(message: types.Message):
     try:
         global last_film
         film_name = last_film[message.chat.id]
-        await bot.send_message(message.from_user.id, str(film_name))
-        await bot.send_message(message.from_user.id, str(message.chat.id))
-        await bot.send_message(message.from_user.id, str(last_film))
         try:
             imdb_link = get_imdb_link(film_name)
         except:
             await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
-        rating = get_rating(imdb_link)
-        await bot.send_message(msg.from_user.id, rating)
+        try:
+            rating = get_rating(imdb_link)
+            await bot.send_message(msg.from_user.id, rating)
+        except:
+            await bot.send_message(msg.from_user.id, 'wtf')
+
     except:
 
         await message.reply("Ты еще не указал название ни одного фильма :(")
