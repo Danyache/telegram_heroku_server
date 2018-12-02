@@ -102,6 +102,7 @@ async def process_start_command(message: types.Message):
     except:
 
         await message.reply("Ты еще не указал название ни одного фильма :(")
+        await bot.send_message(message.from_user.id, str(last_film))
 
 @dp.message_handler(commands=['poster'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
@@ -147,7 +148,7 @@ async def film_info(msg: types.Message):
 
     info = get_info(imdb_link)
     await bot.send_message(msg.from_user.id, info)
-
+    await bot.send_message(msg.from_user.id, str(last_film))
     # А вот и рейтинг
 
     # rating = get_rating(imdb_link)
