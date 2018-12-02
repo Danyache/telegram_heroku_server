@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import re
 # from PIL import Image
 # from io import BytesIO
-
-
+last_film = {}
+imdb_links = {}
 
 TOKEN = '633998206:AAG_wQi0DWwUJIGwrZmg-XOubPXu707Z3Dk'
 # from config import TOKEN
@@ -88,13 +88,39 @@ async def process_start_command(message: types.Message):
 async def process_help_command(message: types.Message):
     await message.reply("Напиши мне название фильма, а я дам про него информацию и подскажу, где его можно посмотреть!")
 
+@dp.message_handler(commands=['rating'], commands_prefix='!/')
+async def process_start_command(message: types.Message):
+    try:
+        film_name = last_film[message.from_user.id]
+        try:
+            imdb_link = get_imdb_link(film_name)
+        except:
+            await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+        rating = get_rating(imdb_link)
+        await bot.send_message(msg.from_user.id, rating)
+    except:
+        await message.reply("Ты еще не указал название ни одного фильма :(")
+
+@dp.message_handler(commands=['rating'], commands_prefix='!/')
+async def process_start_command(message: types.Message):
+    try:
+        film_name = last_film[message.from_user.id]
+        try:
+            imdb_link = get_imdb_link(film_name)
+        except:
+            await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+        poster_url = get_poster(imdb_link)
+        await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
+    except:
+        await message.reply("Ты еще не указал название ни одного фильма :(")
+
 
 @dp.message_handler()
 async def film_info(msg: types.Message):
-    
     # Тут мы получаем ссылку на то, где посмотреть фильм
     try:
         film_name = msg.text
+        last_film[msg.from_user.id] = film_name
         answer = get_href(film_name)
         await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
         await bot.send_message(msg.from_user.id, answer[0])
@@ -120,15 +146,15 @@ async def film_info(msg: types.Message):
 
     # А вот и рейтинг
 
-    rating = get_rating(imdb_link)
-    await bot.send_message(msg.from_user.id, rating)
+    # rating = get_rating(imdb_link)
+    # await bot.send_message(msg.from_user.id, rating)
 
 
     # А вот и постер
 
-    poster_url = get_poster(imdb_link)
+    # poster_url = get_poster(imdb_link)
 
-    await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
+    # await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
 
 
 if __name__ == '__main__':
