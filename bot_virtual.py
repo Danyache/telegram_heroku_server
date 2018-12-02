@@ -90,18 +90,19 @@ async def process_help_command(message: types.Message):
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
+    
     # try:
     global last_film
     film_name = last_film[message.chat.id]
     try:
         imdb_link = get_imdb_link(film_name)
     except:
-        await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+        await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
     try:
         rating = get_rating(imdb_link)
-        await bot.send_message(msg.from_user.id, rating)
+        await bot.send_message(message.from_user.id, rating)
     except:
-        await bot.send_message(msg.from_user.id, 'wtf')
+        await bot.send_message(message.from_user.id, 'wtf')
     await bot.send_message(message.from_user.id, film_name)
 
     # except:
