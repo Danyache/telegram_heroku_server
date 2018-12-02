@@ -91,6 +91,7 @@ async def process_help_command(message: types.Message):
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
     try:
+        global last_film
         film_name = last_film[message.chat.id]
         try:
             imdb_link = get_imdb_link(film_name)
@@ -99,11 +100,13 @@ async def process_start_command(message: types.Message):
         rating = get_rating(imdb_link)
         await bot.send_message(msg.from_user.id, rating)
     except:
+
         await message.reply("Ты еще не указал название ни одного фильма :(")
 
 @dp.message_handler(commands=['poster'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
     try:
+        global last_film
         film_name = last_film[message.chat.id]
         try:
             imdb_link = get_imdb_link(film_name)
@@ -118,6 +121,7 @@ async def process_start_command(message: types.Message):
 @dp.message_handler()
 async def film_info(msg: types.Message):
     # Тут мы получаем ссылку на то, где посмотреть фильм
+    global last_film
     film_name = msg.text
     last_film[msg.chat.id] = film_name
     try:
