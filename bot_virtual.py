@@ -93,22 +93,18 @@ async def process_start_command(message: types.Message):
     
     # try:
     global last_film
-    film_name = last_film[message.chat.id]
+    try:
+        film_name = last_film[message.chat.id]
+    except:
+        await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         imdb_link = get_imdb_link(film_name)
     except:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
-    try:
-        rating = get_rating(imdb_link)
-        await bot.send_message(message.from_user.id, rating)
-    except:
-        await bot.send_message(message.from_user.id, 'wtf')
-    await bot.send_message(message.from_user.id, film_name)
 
-    # except:
-
-    #     await message.reply("Ты еще не указал название ни одного фильма :(")
-    #     await bot.send_message(message.from_user.id, str(last_film))
+    rating = get_rating(imdb_link)
+    await bot.send_message(message.from_user.id, rating)
+    
 
 @dp.message_handler(commands=['poster'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
@@ -118,12 +114,34 @@ async def process_start_command(message: types.Message):
         try:
             imdb_link = get_imdb_link(film_name)
         except:
-            await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+            await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
         poster_url = get_poster(imdb_link)
-        await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
+        await bot.send_photo(message.chat.id, types.InputFile.from_url(poster_url))
     except:
         await message.reply("Ты еще не указал название ни одного фильма :(")
 
+@dp.message_handler(commands=['watch', commands_prefix='!/'])
+async def process_start_command(message: types.Message):
+    try:
+        film_name = last_film[message.chat.id]
+    except:
+        pass
+    try:
+        imdb_link = get_imdb_link(film_name)
+    except:
+        pass
+
+    try:
+        answer = get_href(film_name)
+        # await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
+        # await bot.send_message(msg.from_user.id, answer[0])
+        await bot.send_message(msg.from_user.id, 'Если вдруг ссылка была нерабочая, то еще можете попробовать посмотреть тут')
+        new_films = ''
+        for href in answer[1:]:
+            new_films = new_films + href + '\n'
+        await bot.send_message(msg.from_user.id, new_films)
+    except:
+        await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
 @dp.message_handler()
 async def film_info(msg: types.Message):
@@ -131,19 +149,17 @@ async def film_info(msg: types.Message):
     global last_film
     film_name = msg.text
     last_film[msg.chat.id] = film_name
-    try:
-        answer = get_href(film_name)
-        await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
-        await bot.send_message(msg.from_user.id, answer[0])
-        await bot.send_message(msg.from_user.id, 'Если вдруг ссылка нерабочая, то еще можете попробовать посмотреть тут')
-        new_films = ''
-        for href in answer[1:]:
-            new_films = new_films + href + '\n'
-        await bot.send_message(msg.from_user.id, new_films)
-
-
-    except:
-        await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
+    # try:
+    #     answer = get_href(film_name)
+    #     await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
+    #     await bot.send_message(msg.from_user.id, answer[0])
+    #     # await bot.send_message(msg.from_user.id, 'Если вдруг ссылка нерабочая, то еще можете попробовать посмотреть тут')
+    #     # new_films = ''
+    #     # for href in answer[1:]:
+    #     #     new_films = new_films + href + '\n'
+    #     # await bot.send_message(msg.from_user.id, new_films)
+    # except:
+    #     await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
     try:
         imdb_link = get_imdb_link(film_name)
@@ -154,7 +170,6 @@ async def film_info(msg: types.Message):
 
     info = get_info(imdb_link)
     await bot.send_message(msg.from_user.id, info)
-    await bot.send_message(msg.from_user.id, str(last_film))
     # А вот и рейтинг
 
     # rating = get_rating(imdb_link)
@@ -163,9 +178,23 @@ async def film_info(msg: types.Message):
 
     # А вот и постер
 
-    # poster_url = get_poster(imdb_link)
+    poster_url = get_poster(imdb_link)
 
-    # await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
+    await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
+
+    # Где посмотреть
+
+    try:
+        answer = get_href(film_name)
+        await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
+        await bot.send_message(msg.from_user.id, answer[0])
+        # await bot.send_message(msg.from_user.id, 'Если вдруг ссылка нерабочая, то еще можете попробовать посмотреть тут')
+        # new_films = ''
+        # for href in answer[1:]:
+        #     new_films = new_films + href + '\n'
+        # await bot.send_message(msg.from_user.id, new_films)
+    except:
+        await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
 
 if __name__ == '__main__':
