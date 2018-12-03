@@ -86,7 +86,7 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['help'], commands_prefix='!/')
 async def process_help_command(message: types.Message):
-    await message.reply("Напиши мне название фильма, а я дам про него информацию и подскажу, где его можно посмотреть!")
+    await message.reply("Напиши название фильма и я выдам о нем информацию \n /watch -- еще места, где посмотреть фильм \n /rating -- рейтинг фильма по версии imdb")
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
