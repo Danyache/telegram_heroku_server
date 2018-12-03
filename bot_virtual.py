@@ -120,28 +120,28 @@ async def process_start_command(message: types.Message):
     except:
         await message.reply("Ты еще не указал название ни одного фильма :(")
 
-@dp.message_handler(commands=['watch', commands_prefix='!/'])
-async def process_start_command(message: types.Message):
-    try:
-        film_name = last_film[message.chat.id]
-    except:
-        pass
-    try:
-        imdb_link = get_imdb_link(film_name)
-    except:
-        pass
+# @dp.message_handler(commands=['watch', commands_prefix='!/'])
+# async def process_start_command(message: types.Message):
+#     try:
+#         film_name = last_film[message.chat.id]
+#     except:
+#         pass
+#     try:
+#         imdb_link = get_imdb_link(film_name)
+#     except:
+#         pass
 
-    try:
-        answer = get_href(film_name)
-        # await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
-        # await bot.send_message(msg.from_user.id, answer[0])
-        await bot.send_message(msg.from_user.id, 'Если вдруг ссылка была нерабочая, то еще можете попробовать посмотреть тут')
-        new_films = ''
-        for href in answer[1:]:
-            new_films = new_films + href + '\n'
-        await bot.send_message(msg.from_user.id, new_films)
-    except:
-        await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
+#     try:
+#         answer = get_href(film_name)
+#         # await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
+#         # await bot.send_message(msg.from_user.id, answer[0])
+#         await bot.send_message(msg.from_user.id, 'Если вдруг ссылка была нерабочая, то еще можете попробовать посмотреть тут')
+#         new_films = ''
+#         for href in answer[1:]:
+#             new_films = new_films + href + '\n'
+#         await bot.send_message(msg.from_user.id, new_films)
+#     except:
+#         await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
 @dp.message_handler()
 async def film_info(msg: types.Message):
