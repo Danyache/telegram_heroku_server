@@ -114,7 +114,7 @@ async def process_help_command(message: types.Message):
                         /watch -- еще места, где посмотреть фильм \n \
                         /rating -- рейтинг фильма по версии imdb \n \
                         /wiki_link -- данный фильм на википедии \n \
-                        /imdb_link -- данный фильм на imdb", parse_mode='Markdown')
+                        /imdb_link -- данный фильм на imdb") # , parse_mode='Markdown')
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
