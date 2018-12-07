@@ -35,7 +35,7 @@ def get_href(film_name):
     while k<5:
         href = successor_urls[i].find('a').get('href')
         if ("kinokrad" not in href) and ("kinobar" not in href) and ("smotri-filmi" not in href) \
-             and ("hdrezka.ag" not in href) and ("youtube" not in href) and ("gidonline" not in href):
+             and ("hdrezka.ag" not in href) and ("kinogo" not in href) and ("youtube" not in href) and ("gidonline" not in href):
             match = re.search('&sa=U', href)
             another_match = re.search("https?://", href)
             n = match.start()
