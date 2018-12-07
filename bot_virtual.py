@@ -154,7 +154,7 @@ async def process_start_command(message: types.Message):
     except:
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
-        wiki_link = get_wiki_link(film_name)
+        wiki_link = get_wiki_href(film_name)
     except:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
