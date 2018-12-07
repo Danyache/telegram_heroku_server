@@ -177,6 +177,23 @@ async def process_start_command(message: types.Message):
         await message.reply("Ты еще не указал название ни одного фильма :(")
         await bot.send_message(message.from_user.id, poster_url)
 
+@dp.message_handler(commands=['imdb_info'], commands_prefix='!/')
+async def process_start_command(message: types.Message):
+    
+    # try:
+    global last_film
+    try:
+        film_name = last_film[message.chat.id]
+    except:
+        await message.reply("Ты еще не указал название ни одного фильма :(")
+    try:
+        imdb_link = get_imdb_link(film_name)
+    except:
+        await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+
+    info = get_info(imdb_link)
+    await bot.send_message(msg.from_user.id, info)
+
 @dp.message_handler(commands=['watch'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
     try:
@@ -208,7 +225,6 @@ async def film_info(msg: types.Message):
     #     await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     # А вот и описание
-
     # info = get_info(imdb_link)
     # await bot.send_message(msg.from_user.id, info)
 
