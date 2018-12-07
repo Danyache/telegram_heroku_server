@@ -170,6 +170,7 @@ async def process_start_command(message: types.Message):
     except:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
     poster_url = get_wiki_poster(wiki_link)
+    poster_url = "https://" + poster_url 
     try:
         await bot.send_photo(message.chat.id, types.InputFile.from_url(poster_url))
     except:
