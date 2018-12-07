@@ -34,7 +34,8 @@ def get_href(film_name):
     i = 0
     while k<5:
         href = successor_urls[i].find('a').get('href')
-        if ("smotri-filmi" not in href) and ("hdrezka.ag" not in href) and ("youtube" not in href):
+        if ("kinokrad" not in href) and ("kinobar" not in href) and ("smotri-filmi" not in href) \
+             and ("hdrezka.ag" not in href) and ("youtube" not in href) and ("gidonline" not in href):
             match = re.search('&sa=U', href)
             another_match = re.search("https?://", href)
             n = match.start()
@@ -113,8 +114,8 @@ async def process_help_command(message: types.Message):
                         /poster -- постер данного фильма \n \
                         /watch -- еще места, где посмотреть фильм \n \
                         /rating -- рейтинг фильма по версии imdb \n \
-                        /wiki_link -- данный фильм на википедии \n \
-                        /imdb_link -- данный фильм на imdb") # , parse_mode='Markdown')
+                        /wiki -- данный фильм на википедии \n \
+                        /imdb -- данный фильм на imdb") # , parse_mode='Markdown')
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
@@ -133,7 +134,7 @@ async def process_start_command(message: types.Message):
     rating = get_rating(imdb_link)
     await bot.send_message(message.from_user.id, rating)
 
-@dp.message_handler(commands=['imdb_link'], commands_prefix='!/')
+@dp.message_handler(commands=['imdb'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
     
     # try:
@@ -149,7 +150,7 @@ async def process_start_command(message: types.Message):
 
     await bot.send_message(message.from_user.id, imdb_link)
 
-@dp.message_handler(commands=['wiki_link'], commands_prefix='!/')
+@dp.message_handler(commands=['wiki'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
     
     # try:
@@ -182,22 +183,6 @@ async def process_start_command(message: types.Message):
         await message.reply("Ты еще не указал название ни одного фильма :(")
         await bot.send_message(message.from_user.id, poster_url)
 
-@dp.message_handler(commands=['imdb_info'], commands_prefix='!/')
-async def process_start_command(message: types.Message):
-    
-    # try:
-    global last_film
-    try:
-        film_name = last_film[message.chat.id]
-    except:
-        await message.reply("Ты еще не указал название ни одного фильма :(")
-    try:
-        imdb_link = get_imdb_link(film_name)
-    except:
-        await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
-
-    info = get_info(imdb_link)
-    await bot.send_message(msg.from_user.id, info)
 
 @dp.message_handler(commands=['watch'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
