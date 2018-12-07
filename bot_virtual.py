@@ -219,14 +219,6 @@ async def film_info(msg: types.Message):
     film_name = msg.text
     last_film[msg.chat.id] = film_name
 
-    # try:
-    #     imdb_link = get_imdb_link(film_name)
-    # except:
-    #     await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
-
-    # А вот и описание
-    # info = get_info(imdb_link)
-    # await bot.send_message(msg.from_user.id, info)
 
     # # А вот и постер
 
@@ -242,6 +234,15 @@ async def film_info(msg: types.Message):
         await bot.send_message(msg.from_user.id, answer[0])
     except:
         await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
+
+    try:
+        imdb_link = get_imdb_link(film_name)
+    except:
+        await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+
+    # А вот и описание
+    info = get_info(imdb_link)
+    await bot.send_message(msg.from_user.id, info)
 
 
 if __name__ == '__main__':
