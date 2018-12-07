@@ -5,13 +5,11 @@ from aiogram.utils import executor
 import requests
 from bs4 import BeautifulSoup
 import re
-# from PIL import Image
-# from io import BytesIO
+
 last_film = {}
 imdb_links = {}
 
 TOKEN = '633998206:AAG_wQi0DWwUJIGwrZmg-XOubPXu707Z3Dk'
-# from config import TOKEN
 
 
 bot = Bot(token=TOKEN)
@@ -42,7 +40,7 @@ def get_href(film_name):
             m = another_match.start()
             links.append(successor_urls[i].find('a').get('href')[m:n])
             k += 1
-        # links.append(href)
+        
         i += 1
     return links
 
@@ -87,7 +85,6 @@ def get_imdb_link(film_name):
 def get_poster(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html')
-    # Доделать good quality poster_url = 'https://www.imdb.com' + soup.find('div', class_='poster').a.get('href')
     return soup.find('div', class_='poster').find('img').get('src')
 
 def get_rating(url):
@@ -115,7 +112,7 @@ async def process_help_command(message: types.Message):
                         /watch -- еще места, где посмотреть фильм \n \
                         /rating -- рейтинг фильма по версии imdb \n \
                         /wiki -- данный фильм на википедии \n \
-                        /imdb -- данный фильм на imdb") # , parse_mode='Markdown')
+                        /imdb -- данный фильм на imdb")
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
@@ -192,8 +189,6 @@ async def process_start_command(message: types.Message):
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         answer = get_href(film_name)
-        # await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
-        # await bot.send_message(msg.from_user.id, answer[0])
         await bot.send_message(message.from_user.id, 'Если вдруг ссылка была нерабочая, то еще можете попробовать посмотреть тут')
         new_films = ''
         for href in answer[1:]:
@@ -208,13 +203,6 @@ async def film_info(msg: types.Message):
     global last_film
     film_name = msg.text
     last_film[msg.chat.id] = film_name
-
-
-    # # А вот и постер
-
-    # poster_url = get_poster(imdb_link)
-
-    # await bot.send_photo(msg.chat.id, types.InputFile.from_url(poster_url))
 
     # Где посмотреть
 
@@ -231,6 +219,7 @@ async def film_info(msg: types.Message):
         await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     # А вот и описание
+    
     info = get_info(imdb_link)
     await bot.send_message(msg.from_user.id, info)
 
