@@ -109,7 +109,12 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['help'], commands_prefix='!/')
 async def process_help_command(message: types.Message):
-    await message.reply("Напиши название фильма и я выдам о нем информацию \n /watch -- еще места, где посмотреть фильм \n /rating -- рейтинг фильма по версии imdb")
+    await bot.send_message(message.from_user.id, "Напиши название фильма и я выдам о нем информацию \n \
+                        /poster -- постер данного фильма \n \
+                        /watch -- еще места, где посмотреть фильм \n \
+                        /rating -- рейтинг фильма по версии imdb \n \
+                        /wiki_link -- данный фильм на википедии \n \
+                        /imdb_link -- данный фильм на imdb", parse_mode='Markdown')
 
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
