@@ -163,17 +163,18 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['poster'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
+    global last_film
+    film_name = last_film[message.chat.id]
     try:
-        global last_film
-        film_name = last_film[message.chat.id]
-        try:
-            wiki_link = get_wiki_href(film_name)
-        except:
-            await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
-        poster_url = get_wiki_poster(wiki_link)
+        wiki_link = get_wiki_href(film_name)
+    except:
+        await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
+    poster_url = get_wiki_poster(wiki_link)
+    try:
         await bot.send_photo(message.chat.id, types.InputFile.from_url(poster_url))
     except:
         await message.reply("Ты еще не указал название ни одного фильма :(")
+        await bot.send_message(message.from_user.id, poster_url)
 
 @dp.message_handler(commands=['watch'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
