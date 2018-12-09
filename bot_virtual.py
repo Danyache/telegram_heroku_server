@@ -15,6 +15,7 @@ TOKEN = '633998206:AAG_wQi0DWwUJIGwrZmg-XOubPXu707Z3Dk'
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
+
 def get_href(film_name):
     words = film_name.split()
     url = 'https://www.google.ru/search?q='
@@ -30,19 +31,20 @@ def get_href(film_name):
     links = []
     k = 0
     i = 0
-    while k<5:
+    while k < 5:
         href = successor_urls[i].find('a').get('href')
         if ("kinokrad" not in href) and ("kinobar" not in href) and ("smotri-filmi" not in href) \
-             and ("hdrezka.ag" not in href) and ("kinogo" not in href) and ("youtube" not in href) and ("gidonline" not in href):
+                and ("hdrezka.ag" not in href) and ("kinogo" not in href) and ("youtube" not in href) and ("gidonline" not in href):
             match = re.search('&sa=U', href)
             another_match = re.search("https?://", href)
             n = match.start()
             m = another_match.start()
             links.append(successor_urls[i].find('a').get('href')[m:n])
             k += 1
-        
+
         i += 1
     return links
+
 
 def get_wiki_href(film_name):
     words = film_name.split()
@@ -61,11 +63,13 @@ def get_wiki_href(film_name):
         if 'wikipedia' in i.text:
             return i.text
 
+
 def get_wiki_poster(url):
     headers = {'User-Agent': 'Chrome/70.0.3538.77 Safari/537.36'}
     r = requests.get(url, headers=headers)
     soup = BeautifulSoup(r.text, 'html')
     return soup.find('table', class_='infobox').find('img').get('src')[2:]
+
 
 def get_imdb_link(film_name):
     url = "https://www.imdb.com/find?ref_=nv_sr_fn&q="
@@ -82,22 +86,24 @@ def get_imdb_link(film_name):
     new_url = "https://www.imdb.com" + film_url
     return new_url
 
+
 def get_poster(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html')
     return soup.find('div', class_='poster').find('img').get('src')
+
 
 def get_rating(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html')
     return soup.find('div', class_='imdbRating').strong.get('title')
 
+
 def get_info(url):
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html')
-    return soup.find('div', class_='plot_summary').find('div', class_='summary_text').text.replace('\n', ' ').strip()
-
-
+    return soup.find('div', class_='plot_summary').find(
+        'div', class_='summary_text').text.replace('\n', ' ').strip()
 
 
 @dp.message_handler(commands=['start'], commands_prefix='!/')
@@ -114,55 +120,58 @@ async def process_help_command(message: types.Message):
                         /wiki -- данный фильм на википедии \n \
                         /imdb -- данный фильм на imdb")
 
+
 @dp.message_handler(commands=['rating'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
-    
+
     # try:
     global last_film
     try:
         film_name = last_film[message.chat.id]
-    except:
+    except BaseException:
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         imdb_link = get_imdb_link(film_name)
-    except:
+    except BaseException:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     rating = get_rating(imdb_link)
     await bot.send_message(message.from_user.id, rating)
 
+
 @dp.message_handler(commands=['imdb'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
-    
+
     # try:
     global last_film
     try:
         film_name = last_film[message.chat.id]
-    except:
+    except BaseException:
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         imdb_link = get_imdb_link(film_name)
-    except:
+    except BaseException:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     await bot.send_message(message.from_user.id, imdb_link)
 
+
 @dp.message_handler(commands=['wiki'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
-    
+
     # try:
     global last_film
     try:
         film_name = last_film[message.chat.id]
-    except:
+    except BaseException:
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         wiki_link = get_wiki_href(film_name)
-    except:
+    except BaseException:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     await bot.send_message(message.from_user.id, wiki_link)
-    
+
 
 @dp.message_handler(commands=['poster'], commands_prefix='!/')
 async def process_start_command(message: types.Message):
@@ -170,13 +179,13 @@ async def process_start_command(message: types.Message):
     film_name = last_film[message.chat.id]
     try:
         wiki_link = get_wiki_href(film_name)
-    except:
+    except BaseException:
         await bot.send_message(message.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
     poster_url = get_wiki_poster(wiki_link)
-    poster_url = "https://" + poster_url 
+    poster_url = "https://" + poster_url
     try:
         await bot.send_photo(message.chat.id, types.InputFile.from_url(poster_url))
-    except:
+    except BaseException:
         await message.reply("Ты еще не указал название ни одного фильма :(")
         await bot.send_message(message.from_user.id, poster_url)
 
@@ -185,7 +194,7 @@ async def process_start_command(message: types.Message):
 async def process_start_command(message: types.Message):
     try:
         film_name = last_film[message.chat.id]
-    except:
+    except BaseException:
         await message.reply("Ты еще не указал название ни одного фильма :(")
     try:
         answer = get_href(film_name)
@@ -194,8 +203,9 @@ async def process_start_command(message: types.Message):
         for href in answer[1:]:
             new_films = new_films + href + '\n'
         await bot.send_message(message.from_user.id, new_films)
-    except:
+    except BaseException:
         await bot.send_message(message.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
+
 
 @dp.message_handler()
 async def film_info(msg: types.Message):
@@ -210,16 +220,16 @@ async def film_info(msg: types.Message):
         answer = get_href(film_name)
         await bot.send_message(msg.from_user.id, 'Посмотреть фильм можно здесь')
         await bot.send_message(msg.from_user.id, answer[0])
-    except:
+    except BaseException:
         await bot.send_message(msg.from_user.id, 'К сожалению, не могу найти, где посмотреть этот фильм')
 
     try:
         imdb_link = get_imdb_link(film_name)
-    except:
+    except BaseException:
         await bot.send_message(msg.from_user.id, 'К сожалению, не нашел информацию по этому фильму в базе')
 
     # А вот и описание
-    
+
     info = get_info(imdb_link)
     await bot.send_message(msg.from_user.id, info)
 
