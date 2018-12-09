@@ -17,3 +17,9 @@
 /wiki -- данный фильм на википедии
 
 /imdb -- данный фильм на imdb
+
+# Пример использования
+
+<div>
+	<img src="/Users/danyache/Desktop/screencinema.png" alt="login" width="500">
+</div>
